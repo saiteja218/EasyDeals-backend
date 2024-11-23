@@ -38,7 +38,13 @@ const register= async (req,res)=>{
         const d= await newSeller.save();
         
         let token=createToken(d._id);
-        res.cookie('jwt',token,{ maxAge:3*60*60*1000,credentials:true});
+        res.cookie('jwt', token, {
+          httpOnly: true,   // Prevents JavaScript access to the cookie
+          secure: process.env.NODE_ENV === 'production', // Ensure cookies are sent over HTTPS in production
+          sameSite: 'Strict', // Can be 'Lax' or 'Strict' depending on your needs
+          maxAge: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
+        });
+        
 
         res.status(200).send({
             message:"new seller added succesfully!",
@@ -74,7 +80,13 @@ const login = async (req, res) => {
     if (await bcrypt.compare(password, isEmail.password)) {
       let token = createToken(isEmail._id);
 
-      res.cookie('jwt',token,{ maxAge:3*60*60*1000,credentials:true});
+      res.cookie('jwt', token, {
+        httpOnly: true,   // Prevents JavaScript access to the cookie
+        secure: process.env.NODE_ENV === 'production', // Ensure cookies are sent over HTTPS in production
+        sameSite: 'Strict', // Can be 'Lax' or 'Strict' depending on your needs
+        maxAge: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
+      });
+      
 
       console.log('Generated JWT Token:', token);
       return res.status(200).send({ message: "Login successful", user: isEmail });
