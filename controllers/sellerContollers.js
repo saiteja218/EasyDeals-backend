@@ -41,7 +41,7 @@ const register= async (req,res)=>{
         res.cookie('jwt', token, {
           httpOnly: true,   // Prevents JavaScript access to the cookie
           secure: process.env.NODE_ENV === 'production', // Ensure cookies are sent over HTTPS in production
-          sameSite: 'Strict', // Can be 'Lax' or 'Strict' depending on your needs
+         
           maxAge: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
         });
         
@@ -83,7 +83,7 @@ const login = async (req, res) => {
       res.cookie('jwt', token, {
         httpOnly: true,   // Prevents JavaScript access to the cookie
         secure: process.env.NODE_ENV === 'production', // Ensure cookies are sent over HTTPS in production
-        sameSite: 'Strict', // Can be 'Lax' or 'Strict' depending on your needs
+      
         maxAge: 3 * 60 * 60 * 1000, // 3 hours in milliseconds
       });
       
