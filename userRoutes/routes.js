@@ -6,13 +6,13 @@ const router=express.Router();
 
 router.get("/get-products",getProducts);
 router.get("/get-categories",getCategory);
-router.get("/get-seller-products/:id",checkUser,getSellerProducts);
+router.get("/get-seller-products/:id",getSellerProducts);
 
-router.post("/add-products",checkUser,upload.single('image'),addProducts);
+router.post("/add-products",upload.single('image'),addProducts);
 
-router.patch("/update-products/:id",checkUser,updateProducts);
+router.patch("/update-products/:id",updateProducts);
 
-router.delete("/delete-product/:id",checkUser,deleteProduct);
+router.delete("/delete-product/:id",deleteProduct);
 
 
 
