@@ -13,7 +13,7 @@ router.post("/add-products",upload.single('image'),addProducts);
 router.patch("/update-products/:id",updateProducts);
 
 router.delete("/delete-product/:id",deleteProduct);
-
+ 
 
 
 
