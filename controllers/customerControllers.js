@@ -5,6 +5,8 @@ const order = require("../models/orderModel");
 const bcryptjs = require('bcryptjs');
 const jwt = require("jsonwebtoken")
 const algoliasearch = require('algoliasearch').default;
+const product = require("../models/productModel");
+// imports product from "../models/productModel";
 
 const client = algoliasearch('VQ3KJTIQVD', '1ef54c07db897a42aa603e7acb1861ad');
 const index = client.initIndex('orders');
@@ -83,12 +85,12 @@ const setOrder = async (req, res) => {
   try {
     const order = await new orderModel({ products, customer, amount: totalAmount }).save();
 
-    await index.saveObject({
-        objectID: order._id.toString(),
-      customer: order.customer,
-      amount: order.amount,
-      products: order.products
-    })
+    // await index.saveObject({
+    //     objectID: order._id.toString(),
+    //   customer: order.customer,
+    //   amount: order.amount,
+    //   products: order.products
+    // })
     // console.log(order);
     res.status(200).send(
       {
@@ -106,25 +108,44 @@ const setOrder = async (req, res) => {
 }
 
 const getOrders = async (req, res) => {
+  const { customerId } = req.body;
+
   try {
-    const orders = await orderModel.find({});
-    console.log(orders);
-    res.status(200).send({
-      success: true,
-      orders
-    })
+      const orders = await orderModel.find({ customer: customerId }).lean();
+      res.status(200).json({ success: true, orders });
   } catch (error) {
-    res.status(500).send(
-      {
-        success: false, message: "INternal Server Error:("
-      })
+      console.error("Error fetching orders:", error);
+      res.status(500).json({ success: false, message: "Error fetching orders" });
   }
+};
+
+module.exports = { getOrders };
 
 
-}
+const getProds = async (req, res) => {
+    try {
+        const { productIds } = req.body;
+        if (!productIds || productIds.length === 0) {
+          return res.status(400).json({ message: "No product IDs provided" });
+        }
+    
+        const products = await product.find({ _id: { $in: productIds } });
+      //  console.log(products)
+        if (!products.length) {
+          return res.status(404).json({ message: "Products not found" });
+        }
+    
+        res.json({ products });
+      } catch (error) {
+        console.error("Error fetching cart products:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+    };
+
+
 
 
 
 module.exports = {
-  register, login, setOrder, getOrders
+  register, login, setOrder, getOrders,getProds
 }
